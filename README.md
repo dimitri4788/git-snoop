@@ -1,18 +1,17 @@
 git-snoop
 =========
 
-`git-snoop`: A command line tool for statistical analysis of a git repository. It generates a detailed statistical information about a repository in a beautiful and well styled web page.
+> `git-snoop`: A command line tool for statistical analysis of a git repository. It generates a detailed statistical information about a repository in a beautiful and well styled web page.
 
 Description
 -----------
-TODO
+Wouldn't it be amazing if say you clone a huge codebase and want to quickly see some important details about this repository in a pretty format on a web page. `git-snoop` lets you do that with just a simple command from your terminal.
 
 **Statistics:**
 
 - current status of the repository
     - most recent branch that got a commit
     - untracked, added, edited etc. files
-    - 
 - all authors info for the repository
     - name, email
     - number of commit by each author
