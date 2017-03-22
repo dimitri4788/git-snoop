@@ -17,7 +17,16 @@
     "type": "git",
     "url": "git+https://github.com/deep4788/git-snoop.git"
   },
-  "keywords": [],
+  "keywords": [
+    "git",
+    "command-line-tool",
+    "snoop",
+    "statistics",
+    "repo",
+    "node.js",
+    "javascript",
+    "utility"
+  ],
   "author": "Deep Aggarwal <deep.uiuc@gmail.com>",
   "license": "ISC",
   "bugs": {
