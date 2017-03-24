@@ -8,13 +8,13 @@ Description
 Wouldn't it be amazing if say you clone a huge codebase and want to quickly see some important details about this repository in a pretty format on a web page. `git-snoop` lets you do that with just a simple command from your terminal.
 
 #### Statistics
-- show current status (recent branch, untracked, added, edited etc. files)
-- show all authors info (name, number of commits)
-- show all branches
-- show all languages statistics
-- show start date
-- show all commit logs: can filter based on how far back in the past
-- show all filetypes (by extension) found
+- shows current status (recent branch, untracked, added, edited etc. files)
+- shows all authors info (name, number of commits)
+- shows all branches
+- shows all languages statistics
+- shows start date
+- shows all commit logs: can filter based on how far back in the past
+- shows all filetypes (by extension) found
 
 Installation
 ------------
