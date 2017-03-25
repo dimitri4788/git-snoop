@@ -2,7 +2,7 @@
   "name": "git-snoop",
   "version": "1.0.0",
   "description": "Command line tool for statistical analysis of a git repository",
-  "main": "main.js",
+  "main": "./src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,7 @@
     "npm": "2.15.9"
   },
   "bin": {
-    "git-snoop": "./main.js"
+    "git-snoop": "./src/main.js"
   },
   "repository": {
     "type": "git",
