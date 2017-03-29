@@ -6,13 +6,15 @@ const fs = require("fs");
 const chalk = require("chalk");
 const shell = require("shelljs");
 
-//Shell commands
-let repoNameComm = "basename `git rev-parse --show-toplevel`";
-let firstCommitComm = "git log --reverse --format='format:%ci' | head -1 | awk '{ print $1 }'";
-//let authorsCommitsComm = "git shortlog -s -n --all | awk '{print $1\"-\"$2\",\"}'"; XXX
-let authorsCommitsComm = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
+//Max number of commiters to show; for now 10 (NOTE: this can be changed)
+let maxCommitersToShow = 10;
 
-//Holds all the git data for this repo
+//Shell commands
+let repoNameCmd = "basename `git rev-parse --show-toplevel`";
+let firstCommitCmd = "git log --reverse --format='format:%ci' | head -1 | awk '{ print $1 }'";
+let authorsCommitsCmd = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
+
+//Holds the git data for this repo
 let gitRepoData = {
   repoName: "",
   firstCommit: "",
@@ -37,7 +39,25 @@ let gitRepoData = {
  * @return Returns the stdout output of the shell command
  */
 function execShellCommand(commandToExec) {
-  return shell.exec(commandToExec, {silent: true}).stdout.replace(/^\s+|\s+$/g, '');
+  return shell.exec(commandToExec, {silent: true}).stdout.replace(/^\s+|\s+$/g, '') || "N/A";
+}
+
+/**
+ * @brief Displayes git statistics
+ */
+function displayGitStats() {
+  //TODO: pretty print this
+  console.log("Repo: ", gitRepoData.repoName);
+  console.log("First-commit: ", gitRepoData.firstCommit);
+
+  let noOfCommiters = gitRepoData.authorsContributions.length;
+  let noOfCommitersToShow = noOfCommiters > maxCommitersToShow ? maxCommitersToShow : noOfCommiters;
+  for(let i = 0; i < noOfCommitersToShow; i++) {
+    console.log(`#Commits: ${gitRepoData.authorsContributions[i].noOfCommits}, ${gitRepoData.authorsContributions[i].name}`);
+  }
+
+
+
 }
 
 /**
@@ -45,25 +65,19 @@ function execShellCommand(commandToExec) {
  *  generate displayable info
  */
 function getAndProcessGitData() {
-  console.log(chalk.blue.bold("DEEP"));
-
   //Name of the Repository
-  gitRepoData.repoName = execShellCommand(repoNameComm);
-  console.log(gitRepoData.repoName === "git-snoop" ? "Yes" : "No");
+  gitRepoData.repoName = execShellCommand(repoNameCmd);
 
   //First commit date
-  gitRepoData.firstCommit = execShellCommand(firstCommitComm);
-  console.log("First-commit: ", gitRepoData.firstCommit);
+  gitRepoData.firstCommit = execShellCommand(firstCommitCmd);
 
   //Get Authors Contributions
-  let authorsCommits = execShellCommand(authorsCommitsComm);
-  console.log("*************************");
-  console.log(authorsCommits);
-  console.log("*************************");
-  //console.log("length: " , authorsCommits.length);
-  authorsCommits.split("|;:").forEach(function(element) {
-    console.log(element.trim());
-  });
+  let authorsCommits = execShellCommand(authorsCommitsCmd).split("|;:");
+  //authorsContributions: [],
+  for(let i = 0; i < authorsCommits.length - 1; i++) {
+    let [ noOfCommits, name ] = authorsCommits[i].replace(/^\s+|\s+$/g, '').split("\t");
+    gitRepoData.authorsContributions.push({ "noOfCommits": noOfCommits, "name": name });
+  }
 
   //Get Main Author (Most commits)
 
@@ -76,6 +90,9 @@ function getAndProcessGitData() {
   //Get Filetypes
 
   //Get Commit Logs
+
+  //Display the statistics
+  displayGitStats();
 }
 
 /**
