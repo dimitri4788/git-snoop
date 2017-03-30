@@ -13,20 +13,16 @@ let maxCommitersToShow = 10;
 let repoNameCmd = "basename `git rev-parse --show-toplevel`";
 let firstCommitCmd = "git log --reverse --format='format:%ci' | head -1 | awk '{ print $1 }'";
 let authorsCommitsCmd = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
+let branchesNameCmd = "git branch -r | awk '{ print $0\"|;:\"}' | grep -v \"\\->\"";
 
 //Holds the git data for this repo
 let gitRepoData = {
   repoName: "",
   firstCommit: "",
   mainAuthorName: "",
-  currentStatus: {
-    recentBranch: "",
-    untrackedfiles: "",
-    changedFiles: ""
-  },
   authorsContributions: [],
   languagesStatistics: [],
-  branches: [],
+  numBranches: "",
   fileTypes: [],
   commitLogs: []
 };
@@ -47,8 +43,8 @@ function execShellCommand(commandToExec) {
  */
 function displayGitStats() {
   //TODO: pretty print this
-  console.log("Repo: ", gitRepoData.repoName);
-  console.log("First-commit: ", gitRepoData.firstCommit);
+  console.log(`Repo: ${gitRepoData.repoName}`);
+  console.log(`First-commit: ${gitRepoData.firstCommit}`);
 
   let noOfCommiters = gitRepoData.authorsContributions.length;
   let noOfCommitersToShow = noOfCommiters > maxCommitersToShow ? maxCommitersToShow : noOfCommiters;
@@ -56,8 +52,11 @@ function displayGitStats() {
     console.log(`#Commits: ${gitRepoData.authorsContributions[i].noOfCommits}, ${gitRepoData.authorsContributions[i].name}`);
   }
 
+  //Main author
+  console.log(`Lead author: #Commits: ${gitRepoData.authorsContributions[0].noOfCommits}, ${gitRepoData.authorsContributions[0].name}`);
 
-
+  //Branches info
+  console.log(`Number of branches: ${gitRepoData.numBranches}`);
 }
 
 /**
@@ -71,21 +70,18 @@ function getAndProcessGitData() {
   //First commit date
   gitRepoData.firstCommit = execShellCommand(firstCommitCmd);
 
-  //Get Authors Contributions
+  //Get Authors Contributions; NOTE: loop is iterated till length-1 since the last item is empty
   let authorsCommits = execShellCommand(authorsCommitsCmd).split("|;:");
-  //authorsContributions: [],
   for(let i = 0; i < authorsCommits.length - 1; i++) {
     let [ noOfCommits, name ] = authorsCommits[i].replace(/^\s+|\s+$/g, '').split("\t");
     gitRepoData.authorsContributions.push({ "noOfCommits": noOfCommits, "name": name });
   }
 
-  //Get Main Author (Most commits)
-
-  //Get Current Status
+  //Get number of branches; NOTE: 1 is subtracted as the last item is empty
+  let branchesName = execShellCommand(branchesNameCmd).split("|;:");
+  gitRepoData.numBranches = branchesName.length - 1;
 
   //Get Languages Statistics
-
-  //Get Branches
 
   //Get Filetypes
 
