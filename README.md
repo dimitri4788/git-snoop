@@ -8,12 +8,15 @@ Description
 Wouldn't it be amazing if say you clone a huge codebase and want to quickly see some important details about this repository. `git-snoop` lets you do that with just a simple command from your terminal.
 
 #### Statistics
-- shows authors info (name, number of commits)
+- shows authors info (name and number of commits) and lead author
 - shows number of branches
-- shows all languages statistics
 - shows start date
-- shows all commit logs: can filter based on how far back in the past
-- shows all filetypes (by extension) found
+- shows total number of commits
+- shows top 10 filetypes (by extension) and total number of filetypes
+
+<p align="center">
+    <img src="resources/images/git-snoop-appImage.png">
+</p>
 
 Installation
 ------------
@@ -30,4 +33,4 @@ $ git-snoop .
 
 Future Improvements
 -------------------
-TODO
+- The display can be converted into a nice image that will open using native image viewer
