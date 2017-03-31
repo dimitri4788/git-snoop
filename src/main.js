@@ -5,9 +5,10 @@ const fs = require("fs");
 
 const chalk = require("chalk");
 const shell = require("shelljs");
+const Table = require("cli-table");
 
-//Max number of commiters and file-types to show; for now 10 (NOTE: this can be changed)
-let maxCommitersToShow = 10;
+//Max number of commiters and file-types to show
+let maxCommitersToShow = 5;
 let maxFileTypesToShow = 10;
 
 //Shell commands
@@ -16,17 +17,16 @@ let firstCommitCmd = "git log --reverse --format='format:%ci' | head -1 | awk '{
 let authorsCommitsCmd = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
 let branchesNameCmd = "git branch -r | awk '{ print $0\"|;:\"}' | grep -v \"\\->\"";
 let fileTypesCmd = "find . -type f -name '*.*' | sed 's/.*\\.//' | sort | uniq -c | sort -r | grep -v \"~\" | awk '{ print $0\",\"}'";
+let totalNumberOfCommitsCmd = "git rev-list --all --count";
 
 //Holds the git data for this repo
 let gitRepoData = {
   repoName: "",
   firstCommit: "",
-  mainAuthorName: "",
   authorsContributions: [],
-  languagesStatistics: [],
   numBranches: "",
   fileTypes: [],
-  commitLogs: []
+  totalNumberOfCommitsAcrossAllBranches: ""
 };
 
 /**
@@ -44,32 +44,42 @@ function execShellCommand(commandToExec) {
  * @brief Displayes git statistics
  */
 function displayGitStats() {
-  //TODO: pretty print this
-  console.log(`Repo: ${gitRepoData.repoName}`);
-  console.log(`First-commit: ${gitRepoData.firstCommit}`);
+  const table = new Table();
 
+  //Top commiters
   let noOfCommiters = gitRepoData.authorsContributions.length;
   let noOfCommitersToShow = noOfCommiters > maxCommitersToShow ? maxCommitersToShow : noOfCommiters;
+  let topCommiters = "";
   for(let i = 0; i < noOfCommitersToShow; i++) {
-    console.log(`#Commits: ${gitRepoData.authorsContributions[i].noOfCommits}, ${gitRepoData.authorsContributions[i].name}`);
+    topCommiters += `#Commits: ${gitRepoData.authorsContributions[i].noOfCommits}, ${gitRepoData.authorsContributions[i].name}`;
+    if(i < noOfCommitersToShow - 1) {
+      topCommiters += `\n`;
+    }
   }
-
-  //Main author
-  console.log(`Lead author: #Commits: ${gitRepoData.authorsContributions[0].noOfCommits}, ${gitRepoData.authorsContributions[0].name}`);
-
-  //Branches info
-  console.log(`Number of branches: ${gitRepoData.numBranches}`);
 
   //Filetypes
-  console.log(`Total # of file types: ${gitRepoData.fileTypes.length}`);
-  console.log("Filetypes:");
   let noOfFileTypes = gitRepoData.fileTypes.length;
   let noOfFileTypesToShow = noOfFileTypes > maxFileTypesToShow ? maxFileTypesToShow : noOfFileTypes;
+  let topFiletypes = "";
   for(let i = 0; i < noOfFileTypesToShow; i++) {
-    process.stdout.write(`${gitRepoData.fileTypes[i]}, `);
+    topFiletypes += `${gitRepoData.fileTypes[i]}`;
+    if(i < noOfFileTypesToShow - 1) {
+      topFiletypes += `\n`;
+    }
   }
-  console.log();
 
+  table.push(
+    { 'Repo': gitRepoData.repoName },
+    { 'First Commit': gitRepoData.firstCommit },
+    { 'Lead Author & #Commits': `${gitRepoData.authorsContributions[0].name} & ${gitRepoData.authorsContributions[0].noOfCommits}` },
+    { 'Number of branches': gitRepoData.numBranches },
+    { 'Total # of file types': gitRepoData.fileTypes.length },
+    { 'Total commits across all branches': gitRepoData.totalNumberOfCommitsAcrossAllBranches },
+    { 'Top 5 committers': topCommiters },
+    { 'Top 10 file-types': topFiletypes }
+  );
+
+  console.log(table.toString());
 }
 
 /**
@@ -100,10 +110,8 @@ function getAndProcessGitData() {
     gitRepoData.fileTypes.push(fileTypes[i].replace(/^\s+|\s+$/g, ''));
   }
 
-  //Get Languages Statistics
-
-
-  //Get Commit Logs
+  //To get the commit count across all branches:
+  gitRepoData.totalNumberOfCommitsAcrossAllBranches = execShellCommand(totalNumberOfCommitsCmd);
 
   //Display the statistics
   displayGitStats();
