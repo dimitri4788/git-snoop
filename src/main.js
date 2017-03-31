@@ -6,14 +6,16 @@ const fs = require("fs");
 const chalk = require("chalk");
 const shell = require("shelljs");
 
-//Max number of commiters to show; for now 10 (NOTE: this can be changed)
+//Max number of commiters and file-types to show; for now 10 (NOTE: this can be changed)
 let maxCommitersToShow = 10;
+let maxFileTypesToShow = 10;
 
 //Shell commands
 let repoNameCmd = "basename `git rev-parse --show-toplevel`";
 let firstCommitCmd = "git log --reverse --format='format:%ci' | head -1 | awk '{ print $1 }'";
 let authorsCommitsCmd = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
 let branchesNameCmd = "git branch -r | awk '{ print $0\"|;:\"}' | grep -v \"\\->\"";
+let fileTypesCmd = "find . -type f -name '*.*' | sed 's/.*\\.//' | sort | uniq -c | sort -r | grep -v \"~\" | awk '{ print $0\",\"}'";
 
 //Holds the git data for this repo
 let gitRepoData = {
@@ -57,6 +59,17 @@ function displayGitStats() {
 
   //Branches info
   console.log(`Number of branches: ${gitRepoData.numBranches}`);
+
+  //Filetypes
+  console.log(`Total # of file types: ${gitRepoData.fileTypes.length}`);
+  console.log("Filetypes:");
+  let noOfFileTypes = gitRepoData.fileTypes.length;
+  let noOfFileTypesToShow = noOfFileTypes > maxFileTypesToShow ? maxFileTypesToShow : noOfFileTypes;
+  for(let i = 0; i < noOfFileTypesToShow; i++) {
+    process.stdout.write(`${gitRepoData.fileTypes[i]}, `);
+  }
+  console.log();
+
 }
 
 /**
@@ -81,9 +94,14 @@ function getAndProcessGitData() {
   let branchesName = execShellCommand(branchesNameCmd).split("|;:");
   gitRepoData.numBranches = branchesName.length - 1;
 
+  //Get Filetypes
+  let fileTypes = execShellCommand(fileTypesCmd).split(",");
+  for(let i = 0; i < fileTypes.length - 1; i++) {
+    gitRepoData.fileTypes.push(fileTypes[i].replace(/^\s+|\s+$/g, ''));
+  }
+
   //Get Languages Statistics
 
-  //Get Filetypes
 
   //Get Commit Logs
 
