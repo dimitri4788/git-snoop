@@ -7,6 +7,8 @@ const chalk = require("chalk");
 const shell = require("shelljs");
 const Table = require("cli-table");
 
+const ignore = require("./ignore");
+
 //Max number of commiters and file-types to show
 let maxCommitersToShow = 5;
 let maxFileTypesToShow = 10;
@@ -16,7 +18,7 @@ let repoNameCmd = "basename `git rev-parse --show-toplevel`";
 let firstCommitCmd = "git log --reverse --format='format:%ci' | head -1 | awk '{ print $1 }'";
 let authorsCommitsCmd = "git shortlog -s -n --all | awk '{ print $0\"|;:\"}'";
 let branchesNameCmd = "git branch -r | awk '{ print $0\"|;:\"}' | grep -v \"\\->\"";
-let fileTypesCmd = "find . -type f -name '*.*' | sed 's/.*\\.//' | sort | uniq -c | sort -rn | grep -v \"~\" | awk '{ print $0\",\"}'";
+let fileTypesCmd = `find . -type f ${ignore.ignoreFilesAndDirs} | sed 's/.*\\.//' | sort | uniq -c | sort -rn | grep -v \"~\" | awk '{ print $0\",\"}'`;
 let totalNumberOfCommitsCmd = "git rev-list --all --count";
 
 //Holds the git data for this repo

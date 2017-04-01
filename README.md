@@ -34,3 +34,4 @@ $ git-snoop .
 Future Improvements
 -------------------
 - The display can be converted into a nice image that will open using native image viewer
+- It currently ignores the files or directories (patterns) that are listed in *src/ignore.js* but this list can be missing some other files or directories that should not be included while calculating file-types related information
