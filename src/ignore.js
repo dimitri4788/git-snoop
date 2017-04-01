@@ -94,7 +94,7 @@ let ignoreFilesAndDirs = ` ! -path "*.git*"`
 + ` ! -path "sdist/"`
 + ` ! -path "var/"`
 + ` ! -path "wheels/"`
-+ ` ! -path "*.egg-info/"`
++ ` ! -path "*.egg-info/*"`
 + ` ! -path ".installed.cfg"`
 + ` ! -path "*.egg"`
 + ` ! -path "*.manifest"`
