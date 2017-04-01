@@ -72,13 +72,13 @@ function displayGitStats() {
 
   table.push(
     { 'Repo': gitRepoData.repoName },
-    { 'First Commit': gitRepoData.firstCommit },
+    { 'First Commit (YYYY-MM-DD)': gitRepoData.firstCommit },
     { 'Lead Author & #Commits': `${gitRepoData.authorsContributions[0].name} & ${gitRepoData.authorsContributions[0].noOfCommits}` },
     { 'Number of branches': gitRepoData.numBranches },
     { 'Total # of file types': gitRepoData.fileTypes.length },
     { 'Total commits across all branches': gitRepoData.totalNumberOfCommitsAcrossAllBranches },
-    { 'Top 5 committers': topCommiters },
-    { 'Top 10 file-types': topFiletypes }
+    { 'Top committers': topCommiters },
+    { 'Top file-types': topFiletypes }
   );
 
   console.log(table.toString());
