@@ -1,7 +1,8 @@
 let ignoreFilesAndDirs = ` ! -path "*.git*"`
 + ` ! -path "*.bmpr"`
 + ` ! -path "*LICENSE*"`
-+ ` ! -path "./dist"`
++ ` ! -path "./dist*"`
++ ` ! -path "*thirdparty*"`
 + ` ! -path "*node_modules*"`
 + ` ! -path "./.idea"`
 + ` ! -path "./.sass-cache"`
